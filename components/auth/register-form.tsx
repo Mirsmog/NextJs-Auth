@@ -73,6 +73,7 @@ export const RegisterForm: React.FC<RegisterForm> = ({}) => {
                       {...field}
                       placeholder="your name"
                       disabled={isPending}
+                      autoComplete="new-password"
                       className={cn({
                         'focus-visible:ring-red-500 border-red-500': nameError,
                       })}
@@ -95,6 +96,7 @@ export const RegisterForm: React.FC<RegisterForm> = ({}) => {
                       {...field}
                       placeholder="you@example.com"
                       type="email"
+                      autoComplete="new-password"
                       disabled={isPending}
                       className={cn({
                         'focus-visible:ring-red-500 border-red-500': emailError,
@@ -119,6 +121,7 @@ export const RegisterForm: React.FC<RegisterForm> = ({}) => {
                       placeholder="••••••••••••"
                       type="password"
                       disabled={isPending}
+                      autoComplete="new-password"
                       className={cn(
                         {
                           'focus-visible:ring-red-500 border-red-500 placeholder:text-red-500':

@@ -3,7 +3,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { LoginSchema } from '@/schemas';
+import { ResetSchema } from '@/schemas';
 import { CardWrapper } from './card-wrapper';
 import {
   Form,
@@ -18,49 +18,42 @@ import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import { FormError } from '../form-error';
 import { FormSuccess } from '../form-success';
-import { login } from '@/actions/login';
+import { reset } from '@/actions/reset';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-interface LoginForm {}
+interface ResetForm {}
 
-export const LoginForm: React.FC<LoginForm> = ({}) => {
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+export const ResetForm: React.FC<ResetForm> = ({}) => {
+  const form = useForm<z.infer<typeof ResetSchema>>({
+    resolver: zodResolver(ResetSchema),
     shouldUnregister: false,
     defaultValues: {
       email: '',
-      password: '',
     },
   });
   const emailError = Boolean(form.formState.errors.email);
-  const passError = Boolean(form.formState.errors.password);
   const [isPending, startTransition] = React.useTransition();
 
   const [error, setError] = React.useState<string | undefined>('');
   const [success, setSuccess] = React.useState<string | undefined>('');
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = (values: z.infer<typeof ResetSchema>) => {
     setError('');
     setSuccess('');
     startTransition(() => {
-      login(values).then((data) => {
+      reset(values).then((data) => {
         setError(data?.error);
         setSuccess(data?.success);
       });
     });
   };
-  const searchParams = useSearchParams();
-  const urlError =
-    searchParams.get('error') === 'OAuthAccountNotLinked'
-      ? 'Email already in use with different provider!'
-      : '';
+
   return (
     <CardWrapper
-      headerLabel="Welcome back"
-      backButtonHref="/register"
-      backButtonLabel="Don't have ann account yet?"
-      showSocial
+      headerLabel="Recover your account"
+      backButtonHref="/login"
+      backButtonLabel="Back to login"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -89,48 +82,11 @@ export const LoginForm: React.FC<LoginForm> = ({}) => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="w-full flex items-center justify-between">
-                    <div>Password</div>
-                    <FormMessage />
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="••••••••••••"
-                      type="password"
-                      disabled={isPending}
-                      autoComplete="new-password"
-                      className={cn(
-                        {
-                          'focus-visible:ring-red-500 border-red-500 placeholder:text-red-500':
-                            passError,
-                        },
-                        'placeholder:text-lg'
-                      )}
-                    />
-                  </FormControl>
-                  <Button
-                    variant={'link'}
-                    size={'sm'}
-                    className="p-0 !mt-0 text-muted-foreground"
-                  >
-                    <Link className="p-0 m-0" href="/reset">
-                      Forgot password?
-                    </Link>
-                  </Button>
-                </FormItem>
-              )}
-            />
           </div>
-          <FormError message={error || urlError} />
+          <FormError message={error} />
           <FormSuccess message={success} />
           <Button className="w-full" disabled={isPending}>
-            Login
+            Send reset email
           </Button>
         </form>
       </Form>
