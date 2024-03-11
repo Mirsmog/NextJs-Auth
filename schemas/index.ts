@@ -6,6 +6,9 @@ export const LoginSchema = z.object({
 export const ResetSchema = z.object({
   email: z.string().email({ message: 'Email is required' }),
 });
+export const NewPasswordScheme = z.object({
+  newPassword: z.string().min(6, { message: 'Password too short' }),
+});
 export const RegisterScheme = z.object({
   email: z.string().email({ message: 'Email is required' }),
   password: z.string().min(6, { message: 'Password too short' }),
